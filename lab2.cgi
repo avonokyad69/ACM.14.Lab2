@@ -6,10 +6,6 @@ use CGI::Carp qw(fatalsToBrowser);
 
 use lab2::st01::st01;
 
-# Если для своей работы создаете отдельный форк, не забывайте его синхронизировать перед отправкой:
-# https://help.github.com/articles/syncing-a-fork/
-#
-
 my @MODULES = 
 (
 	\&ST01::st01,
