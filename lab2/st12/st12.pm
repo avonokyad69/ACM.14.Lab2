@@ -1,10 +1,10 @@
-#!C:/Perl64/bin/Perl.exe
+package ST12;
 use strict;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 
 my @DATABASE=();
-my $pathFile='654';
+my $pathFile='lab2\st12\datafiles\654';
 my @MODULES =
 (
 	\&edit,
@@ -21,7 +21,9 @@ my @ElNames=(
 	'Сердечник'
 	);
 	
-Lab2Main();
+sub st12{
+	Lab2Main();
+}
 
 sub menu{
 	my ($q, $global) = @_;
@@ -30,9 +32,11 @@ sub menu{
 	print "<pre><table cellspacing=\"0\"><tr><th>№&nbsp;</th><th>Название эл-та&nbsp;</th><th>Del</th></tr>";
 	foreach my $s(@DATABASE){
 		$i++;
-		print "<tr><td>$i</td><td><a href=\"$global->{selfurl}?ElN=$i&wtd=1\">$s->{$ElNames[0]}</a></td><td>&nbsp;<a href=\"$global->{selfurl}?ElN=$i&wtd=2\">X</a></td>";
+		print "<tr><td>$i</td><td><a href=\"$global->{selfurl}?ElN=$i&wtd=1&student=$global->{st}\">$s->{$ElNames[0]}</a></td>
+		<td>&nbsp;<a href=\"$global->{selfurl}?ElN=$i&wtd=2&&student=$global->{st}\">X</a></td>";
 	}
-	print "</table></pre><FORM><button type=\"submit\" name=\"wtd\" value=\"1\">Добавить</button></FORM>";
+	print "</table></pre><FORM><button type=\"submit\" name=\"wtd\" value=\"1\">Добавить</button>
+	<INPUT TYPE=\"hidden\" NAME =\"student\" value=\"$global->{st}\"><a href=\"$global->{selfurl}\">EXIT</a></FORM>";
 }
 
 sub ReadFromDatabase{
@@ -48,64 +52,67 @@ sub ReadFromDatabase{
 	}
 	dbmclose(%g);
 } 
+sub SaveInDatabase{
+	dbmopen(my %g, $pathFile, 0644);
+	%g = ();
+	my $i = 0;
+	foreach my $ref2hash(@DATABASE){
+		foreach my $o(@ElNames){
+			$g{$i} .= "$o<==>$ref2hash->{$o}<===>";
+		}
+		$i++;
+	}
+	dbmclose(%g)
+}
 
 sub Lab2Main{
 	my $q = new CGI;
-	my $st	= 0+$q->param('ElN');
+	my $st	= 0+$q->param('student');
 	my $wtd = 0+$q->param('wtd');
-	my $global = {selfurl => $ENV{SCRIPT_NAME}, ElN => $st};	
+	my $global = {selfurl => $ENV{SCRIPT_NAME}, st => $st};	
 	if($wtd && defined $MODULES[$wtd-1]){
 		$MODULES[$wtd-1]->($q, $global);
 	}
 	else{
-	ReadFromDatabase();
+		ReadFromDatabase();
 		menu($q, $global);
 	}
 }
 
 sub save{
 	my ($q, $global) = @_;
-	dbmopen(my %g, $pathFile, 0644);
-	my $str = "";
-	foreach my $o(@ElNames){
-		my $par=$q->param($o);
-		$str.="$o<==>$par<===>";
-	}
-	if (!$global->{ElN}){
-		$g{keys %g} = $str;
-	}else{
-		$g{$global->{ElN}-1} = $str;
-	}
-	dbmclose(%g);
+	my $elnum = $q->param('ElN');
 	ReadFromDatabase();
+	my $elem = {};
+	foreach my $o(@ElNames){
+		$elem->{$o}=$q->param($o);
+	}
+	if(!$elnum){
+		@DATABASE=(@DATABASE, $elem);
+	}else{$DATABASE[$elnum-1]=$elem;}
+	SaveInDatabase();
 	menu($q, $global);
 }
 
 sub delete{
 	my ($q, $global) = @_;
+	my $elnum = $q->param('ElN');
 	ReadFromDatabase();
-	splice(@DATABASE, $global->{ElN}-1, 1);
-	my $i=0;
-	dbmopen(my %g, $pathFile, 0644);
-	%g = ();
-	foreach my $ref2hash(@DATABASE) {
-		foreach my $o(@ElNames) {
-			$g{$i} = $g{$i}."$o<==>$ref2hash->{$o}<===>";
-		}
-		$i++;
-	}
-	dbmclose(%g);
+	splice(@DATABASE, $elnum-1, 1);
+	SaveInDatabase();
 	menu($q, $global);
 }
 
 sub edit {
 	my ($q, $global) = @_;
 	ReadFromDatabase();
+	my $elnum = $q->param('ElN');
 	print $q->header('charset=windows-1251');
-	print "<FORM><INPUT TYPE=\"hidden\" NAME =\"ElN\" value=\"$global->{ElN}\">";
+	print "<FORM><INPUT TYPE=\"hidden\" NAME =\"ElN\" value=\"$elnum\">
+	<INPUT TYPE=\"hidden\" NAME =\"student\" value=\"$global->{st}\">";
 	my $str ="";
 	foreach my $el(@ElNames) {
-		if($global->{ElN}){print "<INPUT TYPE=\"Text\" NAME =\"$el\" value=\"$DATABASE[$global->{ElN}-1]->{$el}\"><br>";}
+		if($elnum){print "<INPUT TYPE=\"Text\" NAME =\"$el\" value=\"$DATABASE[$elnum-1]->{$el}\"><br>";}
 		else {print "<INPUT TYPE=\"Text\" NAME =\"$el\" value=\"$el\"><br>";}
 	}
 	print"<button type=\"submit\" name=\"wtd\" value=\"3\">Сохранить</button></FORM>";	

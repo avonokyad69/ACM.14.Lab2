@@ -10,12 +10,14 @@ use lab2::st22::st22;
 my @MODULES = 
 (
 	\&ST01::st01,
+	\&ST12::st12,
 	\&ST22::st22,
 );
 
 my @NAMES = 
 (
 	"Student 01",
+	"Kushnikov V.",
 	"Student 22",
 );
 
