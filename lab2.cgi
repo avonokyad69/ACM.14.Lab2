@@ -5,6 +5,7 @@ use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 
 use lab2::st01::st01;
+use lab2::st12::st12;
 use lab2::st22::st22;
 
 my @MODULES = 
