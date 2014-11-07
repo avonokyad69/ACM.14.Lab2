@@ -22,7 +22,7 @@ my @NAMES =
 	"Student 01",
 	"Kushnikov V.",
 	"21. Shilenkov",
-	"Student 22",
+	"22. Shishkina",
 );
 
 Lab2Main();
