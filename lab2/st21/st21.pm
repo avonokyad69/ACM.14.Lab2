@@ -1,5 +1,3 @@
-print "Content-type: text/html\n\n";
-
 package ST21;
 use strict;
 use warnings;
