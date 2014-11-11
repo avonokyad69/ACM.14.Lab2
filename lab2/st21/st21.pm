@@ -16,7 +16,7 @@ sub st21
 {
 	my $q = new CGI;
 	my $choice = $q->param('choice');
-	my $global = {selfurl => $ENV{SCRIPT_NAME}, student => $choice};
+	my $global = {selfurl => $ENV{SCRIPT_NAME}};
 	Load_from_file();
 	if(defined $choice)
 	{
@@ -38,7 +38,7 @@ sub menu
 
 	foreach my $name (sort keys %list)
 	{
-		print "<li> <a href=\"/cgi-bin/st21_lab2.pm?choice=$name\" > $list{$name} </a>	</li>";
+		print "<li> <a href=\"/cgi-bin/lab2/st21/st21.pm?choice=$name\" > $list{$name} </a>	</li>";
 	}
 	
 	print "</ul></menu><hr>";	
@@ -50,7 +50,7 @@ sub printForm
 	my $value = 0+$q->param('choice');
 	if(defined $value && $value != 3)
 	{
-		print qq~<FORM action="/cgi-bin/st21_lab2.pm" name = SaveAndUpd>
+		print qq~<FORM action="/cgi-bin/lab2/st21/st21.pm" name = SaveAndUpd>
 			    ФИО:<BR>
 			    <input type=text width = 40 name = "name_"> <BR>
 			    Позиция:<BR>
@@ -64,7 +64,7 @@ sub printForm
 		    </FORM>~;
 	}elsif(defined $value)
 	{
-		print qq~<FORM action="/cgi-bin/st21_lab2.pm" name = SaveAndUpd>
+		print qq~<FORM action="/cgi-bin/lab2/st21/st21.pm" name = SaveAndUpd>
 			    ФИО:<BR>
 			    <input type=text width = 40 name = "name_"> <BR>
 			    <INPUT TYPE="HIDDEN" NAME="choice" VALUE ="$value"/>
