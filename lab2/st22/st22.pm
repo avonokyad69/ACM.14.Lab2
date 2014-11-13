@@ -1,6 +1,7 @@
 
 package ST22;
 use DBI;
+use Data::Dumper;
 use strict;
 use Encode 'from_to';
 
@@ -12,60 +13,78 @@ my %myRoomItems;
 sub st22
 {
 	my ($q, $global) = @_;
+	my $cgiAPI = new CGI;
 	$stNum = $global->{student};
 	$selfurl = $global->{selfurl};
-	$dbh = DBI->connect('DBI:mysql:mydb:localhost:3306', 'root', '', { RaiseError => 1, AutoCommit => 1}); 
-	print "Content-type: text/html\n\n";
-	print qq~
-			<HTML>
-			    <HEAD>
-			       <TITLE>3rd lab</TITLE>
-			    </HEAD>
-			    <BODY>
-				    <hr>
-					    <menu type="toolbar">
-					    	<ul type="square">
-						    	<li> <a href="$selfurl?action=0&student=$stNum" > Show all </a>	</li>
-						    	<li> <a href="$selfurl?action=8&student=$stNum" > Add element </a> </li>
-						    	<li> <a href="$selfurl?action=9&student=$stNum" > Modify element </a> </li>
-						    	<li> <a href="$selfurl?action=10&student=$stNum"> Delete element </a> </li>
-						    	<li> <a href="$selfurl?action=7&student=$stNum" > Load from DB </a> </li>
-						    </ul>
-					    </menu>
-					 <hr>
-				    <BR>
-				    ~;
-	mainFunc();
+	my $isappVS = $cgiAPI->param("isapp");
+	if ($isappVS ==1) {
+		print "Content-type: text/html\n\n";
+		mainFunc($cgiAPI);
+		return 1;
+	} 
+	else {
+		print "Content-type: text/html\n\n";
+		print qq~
+				<HTML>
+				    <HEAD>
+				       <TITLE>3rd lab</TITLE>
+				    </HEAD>
+				    <BODY>
+					    <hr>
+						    <menu type="toolbar">
+						    	<ul type="square">
+							    	<li> <a href="$selfurl?action=0&student=$stNum" > Show all </a>	</li>
+							    	<li> <a href="$selfurl?action=8&student=$stNum" > Add element </a> </li>
+							    	<li> <a href="$selfurl?action=9&student=$stNum" > Modify element </a> </li>
+							    	<li> <a href="$selfurl?action=10&student=$stNum"> Delete element </a> </li>
+							    	<li> <a href="$selfurl?action=7&student=$stNum" > Load from DB </a> </li>
+							    </ul>
+						    </menu>
+						 <hr>
+					    <BR>
+					    ~;
+		mainFunc($cgiAPI);
+		#while((my $name,my $item) = each %ENV)
+		#{
+		#	print $name." = ".$item."; <BR>"
+		#};
 
-	 
-	print qq~
-			    </BODY>
-			    <footer>
-			    <BR>
-			    <hr>
-			    Designed by: ShishkinaV (st22) <BR>
-			    <a href="$global->{selfurl}">Back</a><BR>
-			    </footer>
-			</HTML>~;
+		 
+		print qq~
+				    </BODY>
+				    <footer>
+				    <BR>
+				    <hr>
+				    Designed by: ShishkinaV (st22) <BR>
+				    <a href="$global->{selfurl}">Back</a><BR>
+				    </footer>
+				</HTML>~;
+		return 1;
+	}
+	
 
 	
-	$dbh->disconnect();
-	return 1;
+	
 };
 
 1;
 
 sub mainFunc
 {
+	my ($params) = @_;
+	my $action = $params->param("action");
+
 	my @arr = (\&showAllItems, \&addItem, \&updateItem, \&deleteItem, \&saveToFile, 
 				\&loadFromFile, \&saveToDB, \&loadFromDB, \&addItemForm, \&updItemForm, \&delItemForm);
-	my $cgiAPI = new CGI;
-	my $action = $cgiAPI->param("action");
 
 	if(defined $action) {
 		#loadFromFile();
+
+		$dbh = DBI->connect('DBI:mysql:mydb:localhost:3306', 'root', '', { RaiseError => 1, AutoCommit => 1});
 		loadFromDB();
-		$arr[$action]->($cgiAPI);
+		$arr[$action]->($params);
+
+		$dbh->disconnect();
 		#saveToFile();
 	};
 
@@ -151,22 +170,44 @@ sub updateItem
 
 sub showAllItems
 {
+	my ($params) = @_;
 	my $resStr;
-	$resStr .=  "<ul type=square>";
-	while((my $name,my $item) = each %myRoomItems)
-	{
-		from_to($name,'cp866','windows-1251');
-		$resStr .= "<li>"."Name of element: " .$name."; ";
-		while((my $itemKey,my $itemInfo) = each %{$myRoomItems{$name}})
+	my $isappVS = $params->param("isapp");
+	if ($isappVS ==1) {
+		#print "Content-type: text/html\n\n";
+		while((my $name,my $item) = each %myRoomItems)
 		{
-			#print "Item info: ".$itemKey." ".$itemInfo."<BR>";
-			from_to($itemKey,'cp866','windows-1251');
-			from_to($itemInfo,'cp866','windows-1251');
-			$resStr .=$itemKey." of element: ".$itemInfo."; "
+			from_to($name,'cp866','windows-1251');
+			$resStr .= $name;
+			while((my $itemKey,my $itemInfo) = each %{$myRoomItems{$name}})
+			{
+				#print "Item info: ".$itemKey." ".$itemInfo."<BR>";
+				from_to($itemKey,'cp866','windows-1251');
+				from_to($itemInfo,'cp866','windows-1251');
+				$resStr .= "_".$itemInfo;
+			};
+			$resStr .= ";";
 		};
-		$resStr .= "</li>";
+	} 
+	else
+	{
+		$resStr .=  "<ul type=circle>";
+		while((my $name,my $item) = each %myRoomItems)
+		{
+			from_to($name,'cp866','windows-1251');
+			$resStr .= "<li>"."Name of element: " .$name."; ";
+			while((my $itemKey,my $itemInfo) = each %{$myRoomItems{$name}})
+			{
+				#print "Item info: ".$itemKey." ".$itemInfo."<BR>";
+				from_to($itemKey,'cp866','windows-1251');
+				from_to($itemInfo,'cp866','windows-1251');
+				$resStr .=$itemKey." of element: ".$itemInfo."; "
+			};
+			$resStr .= "</li>";
+		};
+		$resStr .= "</ul>";	
 	};
-	$resStr .= "</ul>";	
+
 	print $resStr;
 };
 
@@ -194,17 +235,17 @@ sub saveToFile
 sub loadFromFile
 {
 	#print "<BR>"."loadFromFile\n"."<BR>";
-	my %buffHash = undef();
-	my $bufStr;
-	dbmopen(%buffHash,"ShishkinaDB",0644) || die "Error open to file!";
+		my %buffHash = undef();
+		my $bufStr;
+		dbmopen(%buffHash,"ShishkinaDB",0644) || die "Error open to file!";
 
-	while((my $name,my $item) = each %buffHash)
-	{
-		my @buf12 = undef();
-		@buf12 =  split(/;/, $buffHash{$name}); 
-		$myRoomItems{$name} = {color => @buf12[0], details =>  @buf12[1]};
-	};
-	dbmclose(%buffHash);
+		while((my $name,my $item) = each %buffHash)
+		{
+			my @buf12 = undef();
+			@buf12 =  split(/;/, $buffHash{$name}); 
+			$myRoomItems{$name} = {color => @buf12[0], details =>  @buf12[1]};
+		};
+		dbmclose(%buffHash);
 };
 
 
