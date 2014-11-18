@@ -21,7 +21,7 @@ my @MODULES =
 
 my @NAMES = 
 (
-	"Student 01",
+	"1. Abramov A.",
 	"05. Girgushkina",
 	"Kushnikov V.",
 	"21. Shilenkov",
