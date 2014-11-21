@@ -184,3 +184,5 @@ sub Load_from_file
 	};	
 	dbmclose(%buff);
 }
+
+return 1;
