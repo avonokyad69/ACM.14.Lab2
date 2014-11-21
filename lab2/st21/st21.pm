@@ -3,8 +3,7 @@ use strict;
 use warnings;
 use CGI;
 
-my %list =();
-%list = (
+my %list = (
 	1 => 'Add',
 	2 => 'Edit',
 	3 => 'Delete',
@@ -14,9 +13,9 @@ my %Items =();
 
 sub st21
 {
+	my ($q, $global) = @_;
 	my $q = new CGI;
 	my $choice = $q->param('choice');
-	my $global = {selfurl => $ENV{SCRIPT_NAME}};
 	Load_from_file();
 	if(defined $choice)
 	{
@@ -27,7 +26,7 @@ sub st21
 	{
 		menu($q, $global);
 	}	
-	print "</BODY><a href=\"$global->{selfurl}\">Назад</a><BR></HTML>";
+	print "</BODY><a href=\"$global->{selfurl}?student=$global->{student}\">Назад</a><BR></HTML>";
 }
 
 sub menu
@@ -38,7 +37,7 @@ sub menu
 
 	foreach my $name (sort keys %list)
 	{
-		print "<li> <a href=\"/cgi-bin/lab2/st21/st21.pm?choice=$name\" > $list{$name} </a>	</li>";
+		print "<li> <a href=\"$global->{selfurl}?choice=$name&student=$global->{student}\" > $list{$name} </a>	</li>";
 	}
 	
 	print "</ul></menu><hr>";	
@@ -50,7 +49,7 @@ sub printForm
 	my $value = 0+$q->param('choice');
 	if(defined $value && $value != 3)
 	{
-		print qq~<FORM action="/cgi-bin/lab2/st21/st21.pm" name = SaveAndUpd>
+		print qq~<FORM action="$global->{selfurl}" name = SaveAndUpd>
 			    ФИО:<BR>
 			    <input type=text width = 40 name = "name_"> <BR>
 			    Позиция:<BR>
@@ -60,14 +59,16 @@ sub printForm
 			    Клуб:<BR>
 			    <input type=text width = 40 name = "club_"> <BR>
 			    <INPUT TYPE="HIDDEN" NAME="choice" VALUE ="$value"/>
+			    <INPUT TYPE="HIDDEN" NAME="student" VALUE =$global->{student}/>
 			    <input type = submit name = "btn" value = "Сохранить"/><BR>
 		    </FORM>~;
 	}elsif(defined $value)
 	{
-		print qq~<FORM action="/cgi-bin/lab2/st21/st21.pm" name = SaveAndUpd>
+		print qq~<FORM action="$global->{selfurl}" name = SaveAndUpd>
 			    ФИО:<BR>
 			    <input type=text width = 40 name = "name_"> <BR>
 			    <INPUT TYPE="HIDDEN" NAME="choice" VALUE ="$value"/>
+			    <INPUT TYPE="HIDDEN" NAME="student" VALUE =$global->{student}/>
 			    <input type = submit name = "btn" value = "Сохранить"/><BR>
 		    </FORM>~;		
 	}
