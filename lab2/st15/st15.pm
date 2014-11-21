@@ -60,7 +60,8 @@ sub menu{
 					<a href=\"$global->{selfurl}?Num=$i&action=2&student=$global->{st}\">
 						Del
 					</a>
-				</td>";
+				</td>
+			</tr>";
 	}
 	print 
 		"</table>
