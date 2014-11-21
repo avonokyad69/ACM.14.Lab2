@@ -1,5 +1,3 @@
-#!C:/Dwimperl/perl/bin/perl.exe
-
 package ST15;
 use strict;
 use CGI;
