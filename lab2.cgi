@@ -9,6 +9,7 @@ use lab2::st05::st05;
 use lab2::st08::st08;
 use lab2::st12::st12;
 use lab2::st15::st15;
+use lab2::st16::st16;
 use lab2::st21::st21;
 use lab2::st22::st22;
 
@@ -19,6 +20,7 @@ my @MODULES =
 	\&ST08::st08,
 	\&ST12::st12,
 	\&ST15::st15,
+	\&ST16::st16,
 	\&ST21::st21,
 	\&ST22::st22,
 );
@@ -30,6 +32,7 @@ my @NAMES =
 	"08. Kuznetsova",
 	"Kushnikov V.",
 	"15. Pridachin",
+	"Samokhin V.",
 	"21. Shilenkov",
 	"22. Shishkina",
 );
