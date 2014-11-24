@@ -45,7 +45,7 @@ sub menu
 
 sub printForm
 {
-	my ($q) = @_;
+	my ($q, $global) = @_;
 	my $value = 0+$q->param('choice');
 	if(defined $value && $value != 3)
 	{
