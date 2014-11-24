@@ -85,7 +85,7 @@ sub Add
 	
 	if(!defined $name)
 	{
-		    printForm($q);
+		    printForm($q, $global);
 	}
 	else
 	{
@@ -108,7 +108,7 @@ sub Edit
 	
 	if(!defined $name)
 	{
-		    printForm($q);
+		    printForm($q, $global);
 	}elsif(exists($Items{$name}))
 	{
 		@{$Items{$name}}[0] = $pos;
@@ -131,7 +131,7 @@ sub Delete
 	
 	if(!defined $name)
 	{
-		    printForm($q);
+		    printForm($q, $global);
 	}elsif(exists($Items{$name}))
 	{
 		delete($Items{$name});
