@@ -21,7 +21,7 @@ my @MODULES =
 	\&ST05::st05,
 	\&ST08::st08,
 	\&ST12::st12,
-	\&ST12::st13,
+	\&ST13::st13,
 	\&ST14::st14,
 	\&ST15::st15,
 	\&ST16::st16,
