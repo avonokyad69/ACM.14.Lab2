@@ -8,7 +8,7 @@ use lab2::st01::st01;
 use lab2::st05::st05;
 use lab2::st08::st08;
 use lab2::st12::st12;
-use lab2::st12::st13;
+use lab2::st13::st13;
 use lab2::st14::st14;
 use lab2::st15::st15;
 use lab2::st16::st16;
