@@ -15,7 +15,7 @@ sub main
 	my $type = $q->param('type');
 	
 	my %MENU = (
-		'new' 		=> \&DoAdd,
+		'add' 		=> \&DoAdd,
 		'edit' 		=> \&DoEdit,
 		'delete'	=> \&DoDelete,
 	);
@@ -72,7 +72,7 @@ sub showForm
 	print <<ENDOFTEXT;
 	<tr><style type="text/css">
 		TABLE {
-		background: #dc0; /* Цвет фона таблицы */
+		background: #67b; /* Цвет фона таблицы */
 		color: black; /* Цвет текста */
 	}
 	TD, TH {
@@ -167,7 +167,7 @@ sub edit
 		<input type='hidden' name='type' value='add'>
 		<input type='hidden' name='id' value='$targetid'>
 		<td><input type='text' name='region_name' value='$regions[$targetid]->{Region_name}'></td>
-		<td><input type='text' name='department' value='$regions[$targetid]->{Department}'></td>
+		<td><input type='text' name='Department' value='$regions[$targetid]->{Department}'></td>
 		<td><input type='text' name='employees' value='$regions[$targetid]->{Employees}'></td>
 		<td><input type='text' name='income' value='$regions[$targetid]->{Income}'></td>
 		<td><input type='submit' value='Edit'></td>
@@ -197,7 +197,7 @@ sub save
 	
  
 	my %hash;
-	dbmopen(%hash, "lab2/st09/db", 0666);
+	dbmopen(%hash, "lab2/st20/db", 0666);
 	%hash=();
 	my $id=0;
 	foreach my $i(@regions)
@@ -218,17 +218,17 @@ sub load
 	my $targetid = $q->param('id');
  
 	my %hash=();
-	dbmopen(%hash, "lab2/st09/db", 0666);
+	dbmopen(%hash, "lab2/st20/db", 0666);
 	@regions=();
 	my $id=0;
 	foreach my $i(values %hash)
 	{
 		my @tmp = split /\n/, $i;
 		my $region={
-		Company => "$tmp[0]\n",
-		Size => "$tmp[1]\n",
-		Color => "$tmp[2]\n",
-		Year => "$tmp[3]\n",
+		Region_name => "$tmp[0]\n",
+		Department => "$tmp[1]\n",
+		Employees => "$tmp[2]\n",
+		Income => "$tmp[3]\n",
 		};
 		$regions[$id]=$region;
 		$id++;
@@ -249,7 +249,7 @@ sub printHeader
 </head>
 <body>
 <header>
-<h1>Regions</h1>
+<h1>Business Areas</h1>
 </header>
 <a href='$ENV{SCRIPT_NAME}'>Back</a>
 <hr>
