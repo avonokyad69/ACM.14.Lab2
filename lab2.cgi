@@ -5,6 +5,7 @@ use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 
 use lab2::st01::st01;
+use lab2::st02::st02;
 use lab2::st04::st04;
 use lab2::st05::st05;
 use lab2::st08::st08;
@@ -25,7 +26,8 @@ use lab2::st22::st22;
 my @MODULES = 
 (
 	\&ST01::st01,
-		\&ST03::st03,
+	\&ST02::st02,
+	\&ST03::st03,
 	\&ST04::st04,
 	\&ST05::st05,
 	\&ST08::st08,
@@ -46,6 +48,7 @@ my @MODULES =
 my @NAMES = 
 (
 	"1. Abramov A.",
+	"2. Agajanyan",
 	"03.Vasileva",
 	"04.Vorobev",
 	"05. Girgushkina",
